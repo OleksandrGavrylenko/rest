@@ -2,6 +2,9 @@ package it.discovery.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -12,12 +15,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Book {
 	private int id;
 
+	@NotNull
 	private String author;
 
 	@JsonProperty("title")
 	@XmlElement(name = "title")
-	private String name = "Java";
-	
+	@NotNull
+	private String name;
+
+	@Min(1900)
+	@Max(2018)
 	private int year;
 
 	public int getId() {

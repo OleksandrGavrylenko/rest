@@ -6,19 +6,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/book")
 public class BookController {
 
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     public BookController(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
-    @GetMapping
+    @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE,
+            MediaType.APPLICATION_JSON_UTF8_VALUE})
     public List<Book> findAll() {
         return bookRepository.findAll();
     }
@@ -28,9 +30,15 @@ public class BookController {
         return bookRepository.findById(id);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Book create(@RequestBody Book book) {
+    public Book create(@Valid @RequestBody Book book) {
+        bookRepository.save(book);
+        return book;
+    }
+
+    @PutMapping("/{id}")
+    public Book update(@PathVariable int id,@RequestBody Book book) {
         bookRepository.save(book);
         return book;
     }
