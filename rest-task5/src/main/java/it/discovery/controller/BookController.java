@@ -1,5 +1,6 @@
 package it.discovery.controller;
 
+import it.discovery.exception.BookNotFoundException;
 import it.discovery.model.Book;
 import it.discovery.repository.BookRepository;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/book")
@@ -27,7 +29,9 @@ public class BookController {
 
     @GetMapping(path = "/{id}")
     public Book findById(@PathVariable int id) {
-        return bookRepository.findById(id);
+        Book book = bookRepository.findById(id);
+        return Optional.ofNullable(book)
+                .orElseThrow(BookNotFoundException::new);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
