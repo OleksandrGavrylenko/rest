@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/book")
 public class BookController {
 
-    @GetMapping(value = "sample", produces = {
+    @GetMapping(path = "sample", produces = {
             MediaType.APPLICATION_JSON_UTF8_VALUE,
             MediaType.APPLICATION_XML_VALUE
     })
