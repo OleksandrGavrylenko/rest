@@ -7,6 +7,7 @@ import java.util.Map;
 
 import it.discovery.pagination.Page;
 import it.discovery.pagination.PageCriteria;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 import it.discovery.model.Book;
