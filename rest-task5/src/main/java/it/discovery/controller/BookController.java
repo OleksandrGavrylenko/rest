@@ -2,9 +2,13 @@ package it.discovery.controller;
 
 import it.discovery.exception.BookNotFoundException;
 import it.discovery.model.Book;
+import it.discovery.pagination.Page;
+import it.discovery.pagination.PageCriteria;
 import it.discovery.repository.BookRepository;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,8 +27,11 @@ public class BookController {
 
     @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE,
             MediaType.APPLICATION_JSON_UTF8_VALUE})
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public ResponseEntity<List<Book>> findAll(@RequestParam int page, @RequestParam int size) {
+        Page pageResponse = bookRepository.searchBooks(new PageCriteria(page, size));
+
+        return ResponseEntity.ok().header("X-TOTAL-COUNT", String.valueOf(pageResponse.getTotalCount()))
+                .body(pageResponse.getBooks());
     }
 
     @GetMapping(path = "/{id}")
@@ -42,7 +49,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public Book update(@PathVariable int id,@RequestBody Book book) {
+    public Book update(@PathVariable int id, @RequestBody Book book) {
         bookRepository.save(book);
         return book;
     }
