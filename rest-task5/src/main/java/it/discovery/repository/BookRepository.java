@@ -17,4 +17,6 @@ public interface BookRepository {
 
 	Page searchBooks(PageCriteria pageCriteria);
 
+	boolean isEmpty();
+
 }

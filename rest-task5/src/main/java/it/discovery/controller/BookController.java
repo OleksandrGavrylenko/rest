@@ -27,10 +27,13 @@ public class BookController {
 
     @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE,
             MediaType.APPLICATION_JSON_UTF8_VALUE})
-    public ResponseEntity<List<Book>> findAll(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<List<Book>> findAll(@RequestParam(required = false,
+    defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "0")
+            int size) {
         Page pageResponse = bookRepository.searchBooks(new PageCriteria(page, size));
 
-        return ResponseEntity.ok().header("X-TOTAL-COUNT", String.valueOf(pageResponse.getTotalCount()))
+        return ResponseEntity.ok().header("X-TOTAL-COUNT",
+                String.valueOf(pageResponse.getTotalCount()))
                 .body(pageResponse.getBooks());
     }
 
