@@ -1,10 +1,12 @@
 package it.discovery.controller;
 
 import it.discovery.exception.BookNotFoundException;
+import it.discovery.hypermedia.BookResource;
 import it.discovery.model.Book;
 import it.discovery.pagination.Page;
 import it.discovery.pagination.PageCriteria;
 import it.discovery.repository.BookRepository;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/book")
@@ -27,20 +30,20 @@ public class BookController {
 
     @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE,
             MediaType.APPLICATION_JSON_UTF8_VALUE})
-    public ResponseEntity<List<Book>> findAll(@RequestParam(required = false,
+    public ResponseEntity<List<BookResource>> findAll(@RequestParam(required = false,
     defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "0")
             int size) {
         Page pageResponse = bookRepository.searchBooks(new PageCriteria(page, size));
 
         return ResponseEntity.ok().header("X-TOTAL-COUNT",
                 String.valueOf(pageResponse.getTotalCount()))
-                .body(pageResponse.getBooks());
+                .body(pageResponse.getBooks().stream().map(BookResource::new).collect(Collectors.toList()));
     }
 
     @GetMapping(path = "/{id}")
-    public Book findById(@PathVariable int id) {
+    public BookResource findById(@PathVariable int id) {
         Book book = bookRepository.findById(id);
-        return Optional.ofNullable(book)
+        return Optional.ofNullable(book).map(BookResource::new)
                 .orElseThrow(BookNotFoundException::new);
     }
 

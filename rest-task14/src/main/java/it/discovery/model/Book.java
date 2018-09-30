@@ -29,6 +29,8 @@ public class Book {
 	@Max(2018)
 	private int year;
 
+	private boolean rented;
+
 	public int getId() {
 		return id;
 	}
@@ -59,6 +61,14 @@ public class Book {
 
 	public void setYear(int year) {
 		this.year = year;
+	}
+
+	public boolean isRented() {
+		return rented;
+	}
+
+	public void setRented(boolean rented) {
+		this.rented = rented;
 	}
 
 	@Override
