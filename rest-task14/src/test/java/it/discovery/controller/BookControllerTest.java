@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.restassured.module.mockmvc.response.ValidatableMockMvcResponse;
+import io.restassured.response.Response;
 import it.discovery.model.Book;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,10 +53,8 @@ public class BookControllerTest {
     public void findById_nonNumericId_returnBadRequest() throws Exception {
         //Given
         //Then
-        ResultActions resultActions = mockMvc.perform(get("/book/aaa"))
-                .andDo(print());
-        //When
-        resultActions.andExpect(status().isBadRequest());
+        given().when().get("/book/aaa")
+                .then().log().body().statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
