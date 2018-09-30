@@ -16,12 +16,15 @@ public class BookResource extends ResourceSupport {
 
     private int year;
 
+    private boolean rented;
+
     public BookResource(Book book) {
         id = book.getId();
         name = book.getName();
         author = book.getAuthor();
         year = book.getYear();
-        add(linkTo(methodOn(BookController.class).findById(id)).withSelfRel());
+        add(linkTo(methodOn(BookController.class)
+                .findById(id)).withSelfRel());
     }
 
     public void setId(int id) {

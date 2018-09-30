@@ -6,6 +6,9 @@ import it.discovery.model.Book;
 import it.discovery.pagination.Page;
 import it.discovery.pagination.PageCriteria;
 import it.discovery.repository.BookRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,6 +44,7 @@ public class BookController {
     }
 
     @GetMapping(path = "/{id}")
+    @Cacheable("books")
     public BookResource findById(@PathVariable int id) {
         Book book = bookRepository.findById(id);
         return Optional.ofNullable(book).map(BookResource::new)
@@ -55,6 +59,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
+    @CachePut("books")
     public Book update(@PathVariable int id, @RequestBody Book book) {
         bookRepository.save(book);
         return book;
@@ -62,6 +67,7 @@ public class BookController {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict("books")
     public void delete(@PathVariable int id) {
         bookRepository.delete(id);
     }
