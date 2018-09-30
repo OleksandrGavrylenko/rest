@@ -1,15 +1,21 @@
 package it.discovery.controller;
 
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.mockMvc;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import io.restassured.http.ContentType;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import it.discovery.model.Book;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +33,10 @@ public class BookControllerTest {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    @BeforeEach
+    public void setup() {
+        mockMvc(mockMvc);
+    }
     @Test
     public void findById_invalidId_bookNotFound() throws Exception {
         //Given
@@ -49,16 +59,13 @@ public class BookControllerTest {
 
     @Test
     public void save_bookAuthorEmpty_returnBadRequest() throws Exception {
-        //Given
         Book book = new Book();
         book.setName("Java");
         book.setYear(2010);
-        //Then
-        ResultActions resultActions = mockMvc.perform(post("/book")
-                .contentType(MediaType.APPLICATION_JSON_UTF8).content(MAPPER.writeValueAsString(book)))
-                .andDo(print());
-        //When
-        resultActions.andExpect(status().isBadRequest());
+
+        given().contentType(ContentType.JSON).body(book)
+                .when().post("/book")
+                .then().statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
 }

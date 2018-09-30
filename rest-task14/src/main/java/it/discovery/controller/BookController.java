@@ -44,7 +44,7 @@ public class BookController {
                 .orElseThrow(BookNotFoundException::new);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Book create(@Valid @RequestBody Book book) {
         bookRepository.save(book);
